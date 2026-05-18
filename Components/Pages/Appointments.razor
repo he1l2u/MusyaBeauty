@@ -1,0 +1,201 @@
+@page "/appointments"
+@inject IBookingService BookingService
+@inject FluentValidation.IValidator<BookingFormModel> Validator
+
+<PageTitle>Онлайн-запись</PageTitle>
+
+<section class="page-section">
+<h1>Онлайн-запись</h1>
+<p class="muted">Заполните форму, выберите мастера и услугу. После сохранения запись появится в таблице ниже.</p>
+
+@if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <div class="success">@successMessage</div>
+}
+
+@if (errors.Count > 0)
+{
+    <div class="error">
+        <b>Проверьте данные:</b>
+        <ul>
+            @foreach (var error in errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+<div class="form-card">
+    <div class="form-grid">
+        <label>
+            ФИО клиента
+            <input @bind="model.FullName" />
+        </label>
+        <label>
+            Email
+            <input type="email" @bind="model.Email" />
+        </label>
+        <label>
+            Телефон
+            <input @bind="model.Phone" />
+        </label>
+        <label>
+            Мастер
+            <select @bind="model.MasterId">
+                <option value="0">Выберите мастера</option>
+                @foreach (var master in masters)
+                {
+                    <option value="@master.Id">@master.FullName - @master.Specialization</option>
+                }
+            </select>
+        </label>
+        <label>
+            Дата
+            <input type="date" value="@dateText" @onchange="OnDateChanged" />
+        </label>
+        <label>
+            Время
+            <input type="time" value="@timeText" @onchange="OnTimeChanged" />
+        </label>
+    </div>
+
+    <h3>Услуги</h3>
+    <div class="service-list">
+        @foreach (var service in services)
+        {
+            <label class="check-row">
+                <input type="checkbox" checked="@model.SelectedServiceIds.Contains(service.Id)" @onchange="e => ToggleService(service.Id, e.Value)" />
+                <span>@service.Name - @service.Price руб.</span>
+            </label>
+        }
+    </div>
+
+    <button class="button" @onclick="SaveAsync">Создать запись</button>
+</div>
+
+<h2>Созданные записи</h2>
+
+@if (appointments.Count == 0)
+{
+    <p>Пока нет созданных записей.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Дата и время</th>
+                <th>Клиент</th>
+                <th>Мастер</th>
+                <th>Услуги</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var appointment in appointments)
+        {
+            <tr>
+                <td>@appointment.AppointmentDateTime.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@appointment.Client.FullName</td>
+                <td>@appointment.Master.FullName</td>
+                <td>@string.Join(", ", appointment.AppointmentServices.Select(x => x.Service.Name))</td>
+                <td>@appointment.TotalPrice руб.</td>
+                <td>@appointment.Status</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+</section>
+
+@code {
+    private BookingFormModel model = new();
+    private string dateText = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd");
+    private string timeText = "10:00";
+    private string? successMessage;
+    private List<string> errors = new();
+    private List<Master> masters = new();
+    private List<BeautySalonApp.Models.Service> services = new();
+    private List<Appointment> appointments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        masters = await BookingService.GetMastersAsync();
+        services = await BookingService.GetServicesAsync();
+        appointments = await BookingService.GetAppointmentsAsync();
+    }
+
+
+    private void OnDateChanged(ChangeEventArgs e)
+    {
+        dateText = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private void OnTimeChanged(ChangeEventArgs e)
+    {
+        timeText = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private void ToggleService(int serviceId, object? value)
+    {
+        var isChecked = value is bool checkedValue && checkedValue;
+
+        if (isChecked && !model.SelectedServiceIds.Contains(serviceId))
+        {
+            model.SelectedServiceIds.Add(serviceId);
+        }
+        else if (!isChecked)
+        {
+            model.SelectedServiceIds.Remove(serviceId);
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        errors.Clear();
+        successMessage = null;
+
+        if (!DateTime.TryParse(dateText, out var parsedDate))
+        {
+            errors.Add("Введите корректную дату.");
+            return;
+        }
+
+        if (!TimeSpan.TryParse(timeText, out var parsedTime))
+        {
+            errors.Add("Введите корректное время.");
+            return;
+        }
+
+        model.AppointmentDate = parsedDate;
+        model.AppointmentTime = parsedTime;
+        var validationResult = await Validator.ValidateAsync(model);
+
+        if (!validationResult.IsValid)
+        {
+            errors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+            return;
+        }
+
+        try
+        {
+            await BookingService.CreateAppointmentAsync(model);
+            successMessage = "Запись успешно создана.";
+            model = new BookingFormModel();
+            dateText = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd");
+            timeText = "10:00";
+            await LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            errors.Add(ex.Message);
+        }
+    }
+}

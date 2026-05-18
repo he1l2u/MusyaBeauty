@@ -1,0 +1,4 @@
+@BeautySalonApp_HostAddress = http://localhost:8001
+
+GET {{BeautySalonApp_HostAddress}}/health
+Accept: application/json

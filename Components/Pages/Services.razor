@@ -1,0 +1,94 @@
+@page "/services"
+@inject IBookingService BookingService
+
+<PageTitle>Услуги</PageTitle>
+
+<section class="page-section">
+    <h1>Услуги салона</h1>
+    <p class="muted">Базовый список услуг, которые можно выбрать при онлайн-записи.</p>
+
+    @if (services.Count == 0)
+    {
+        <p>Загрузка данных...</p>
+    }
+    else
+    {
+        <div class="service-cards page-service-cards">
+        @foreach (var service in services)
+        {
+            <article class="service-card">
+                <img src="@GetServiceImage(service.Name)" alt="@service.Name" />
+                <div class="card-body">
+                    <h3>@GetShortName(service.Name)</h3>
+                    <p>@service.Description</p>
+                    <strong>@service.Price.ToString("N0") ₽</strong>
+                    <small>@service.DurationMinutes мин.</small>
+                </div>
+            </article>
+        }
+        </div>
+
+        <div class="table-card service-table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Категория</th>
+                        <th>Услуга</th>
+                        <th>Длительность</th>
+                        <th>Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var service in services)
+                {
+                    <tr>
+                        <td>@service.Category</td>
+                        <td>@service.Name</td>
+                        <td>@service.DurationMinutes мин.</td>
+                        <td>@service.Price.ToString("N0") ₽</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@code {
+    private List<BeautySalonApp.Models.Service> services = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        services = await BookingService.GetServicesAsync();
+    }
+
+    private static string GetServiceImage(string name)
+    {
+        if (name.Contains("стриж", StringComparison.OrdinalIgnoreCase))
+        {
+            return "/images/service-haircut.jpg";
+        }
+
+        if (name.Contains("маник", StringComparison.OrdinalIgnoreCase))
+        {
+            return "/images/service-manicure.jpg";
+        }
+
+        return "/images/service-coloring.jpg";
+    }
+
+    private static string GetShortName(string name)
+    {
+        if (name.Contains("стриж", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Стрижка";
+        }
+
+        if (name.Contains("маник", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Маникюр";
+        }
+
+        return "Окрашивание";
+    }
+}

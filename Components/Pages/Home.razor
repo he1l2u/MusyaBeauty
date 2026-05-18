@@ -1,0 +1,157 @@
+@page "/"
+
+<PageTitle>MusyaBeauty</PageTitle>
+
+<section class="hero">
+    <div class="hero-text">
+        <span class="eyebrow">Онлайн-запись</span>
+        <h1>Запись в салон красоты онлайн</h1>
+        <p>Выберите услугу, мастера и удобное время. Подтверждение записи придет сразу после оформления.</p>
+        <div class="hero-actions">
+            <a class="button" href="/appointments">Записаться онлайн</a>
+            <a class="button button-outline" href="/services">Посмотреть услуги</a>
+        </div>
+    </div>
+
+    <div class="booking-preview">
+        <h2>Быстрая запись</h2>
+        <label>
+            Услуга
+            <select>
+                <option>Выберите услугу</option>
+                <option>Женская стрижка</option>
+                <option>Маникюр с покрытием</option>
+                <option>Окрашивание волос</option>
+            </select>
+        </label>
+        <label>
+            Мастер
+            <select>
+                <option>Выберите мастера</option>
+                <option>Акрамова Муслима</option>
+                <option>Ефимова Полина</option>
+                <option>Валеева Динара</option>
+            </select>
+        </label>
+        <label>
+            Дата
+            <input type="text" placeholder="Выберите дату" />
+        </label>
+        <label>
+            Время
+            <input type="text" placeholder="Выберите время" />
+        </label>
+        <a class="button wide" href="/appointments">Найти время</a>
+    </div>
+</section>
+
+<section class="home-section" id="services">
+    <div class="section-title-row">
+        <div>
+            <h2>Популярные услуги</h2>
+            <p>Основные процедуры, которые можно выбрать при онлайн-записи.</p>
+        </div>
+    </div>
+
+    <div class="service-cards">
+        <article class="service-card">
+            <img src="/images/service-haircut.jpg" alt="Пример женской стрижки" />
+            <div class="card-body">
+                <h3>Стрижка</h3>
+                <p>Женская стрижка с укладкой</p>
+                <strong>1 800 ₽</strong>
+            </div>
+        </article>
+        <article class="service-card">
+            <img src="/images/service-manicure.jpg" alt="Пример маникюра" />
+            <div class="card-body">
+                <h3>Маникюр</h3>
+                <p>Классический маникюр с покрытием</p>
+                <strong>1 600 ₽</strong>
+            </div>
+        </article>
+        <article class="service-card">
+            <img src="/images/service-coloring.jpg" alt="Пример окрашивания волос" />
+            <div class="card-body">
+                <h3>Окрашивание</h3>
+                <p>Окрашивание волос любой сложности</p>
+                <strong>4 500 ₽</strong>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="home-section masters-and-mood" id="masters">
+    <div>
+        <div class="section-title-row">
+            <div>
+                <h2>Наши мастера</h2>
+                <p>Коротко о специалистах, к которым можно записаться.</p>
+            </div>
+        </div>
+
+        <div class="master-cards">
+            <article class="master-card compact-master-card">
+                <img src="/images/master-akramova.png" alt="Акрамова Муслима" />
+                <div class="card-body">
+                    <h3>Акрамова Муслима</h3>
+                    <p>Парикмахер-стилист</p>
+                    <a href="/masters">Подробнее</a>
+                </div>
+            </article>
+            <article class="master-card compact-master-card">
+                <img src="/images/master-efimova.png" alt="Ефимова Полина" />
+                <div class="card-body">
+                    <h3>Ефимова Полина</h3>
+                    <p>Мастер маникюра</p>
+                    <a href="/masters">Подробнее</a>
+                </div>
+            </article>
+            <article class="master-card compact-master-card">
+                <img src="/images/master-valeeva.png" alt="Валеева Динара" />
+                <div class="card-body">
+                    <h3>Валеева Динара</h3>
+                    <p>Колорист</p>
+                    <a href="/masters">Подробнее</a>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <aside class="mood-card">
+        <h2>Уголок настроения</h2>
+        <img src="/images/mascot-musya.jpg" alt="Талисман MusyaBeauty" />
+    </aside>
+</section>
+
+<section class="steps">
+    <h2>Как проходит запись</h2>
+    <div class="step-cards">
+        <article>
+            <span>1</span>
+            <h3>Выберите услугу</h3>
+            <p>Выберите из списка подходящую процедуру.</p>
+        </article>
+        <article>
+            <span>2</span>
+            <h3>Выберите мастера и время</h3>
+            <p>Подберите мастера и свободный слот.</p>
+        </article>
+        <article>
+            <span>3</span>
+            <h3>Получите подтверждение</h3>
+            <p>Система сохранит запись и покажет ее в списке.</p>
+        </article>
+    </div>
+</section>
+
+<footer class="footer">
+    <div>
+        <div class="logo footer-logo">
+            <span>MusyaBeauty</span>
+            <small>салон красоты</small>
+        </div>
+    </div>
+    <p>Современный салон красоты для вашего комфорта и уверенности каждый день.</p>
+    <p>© 2025 MusyaBeauty. Все права защищены.</p>
+</footer>

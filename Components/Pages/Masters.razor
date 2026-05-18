@@ -1,0 +1,59 @@
+@page "/masters"
+@inject IBookingService BookingService
+
+<PageTitle>Мастера</PageTitle>
+
+<section class="page-section">
+    <h1>Мастера MusyaBeauty</h1>
+    <p class="muted">В салоне работают мастера по волосам, ногтевому сервису и окрашиванию.</p>
+
+    @if (masters.Count == 0)
+    {
+        <p>Загрузка данных...</p>
+    }
+    else
+    {
+        <div class="master-cards master-page-grid">
+        @foreach (var master in masters)
+        {
+            <article class="master-card">
+                <img src="@GetMasterImage(master.FullName)" alt="@master.FullName" />
+                <div class="card-body">
+                    <h3>@master.FullName</h3>
+                    <p>@master.Specialization</p>
+                    <small>@master.Description</small>
+                </div>
+            </article>
+        }
+        </div>
+    }
+</section>
+
+@code {
+    private List<Master> masters = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        masters = await BookingService.GetMastersAsync();
+    }
+
+    private static string GetMasterImage(string name)
+    {
+        if (name.Contains("Акрамова", StringComparison.OrdinalIgnoreCase))
+        {
+            return "/images/master-akramova.png";
+        }
+
+        if (name.Contains("Ефимова", StringComparison.OrdinalIgnoreCase))
+        {
+            return "/images/master-efimova.png";
+        }
+
+        if (name.Contains("Валеева", StringComparison.OrdinalIgnoreCase))
+        {
+            return "/images/master-valeeva.png";
+        }
+
+        return "/images/master-akramova.png";
+    }
+}
